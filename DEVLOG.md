@@ -42,3 +42,41 @@ What I did: Created the Supabase audits and leads tables with proper schema and 
 What I learned: Next.js generateMetadata must be in a server component — it cannot be used in a 'use client' file. The correct pattern is to split the page into a server component (page.tsx) that fetches data and generates metadata, and a client component (ResultsClient.tsx) that handles all interactivity. Also learned that Supabase row-level security blocks all operations by default — even inserts fail silently without an explicit create policy statement, which cost time to debug.
 Blockers / what I'm stuck on: The Resend from address requires a verified domain — cannot use a custom domain on the free tier without DNS setup. Temporarily using Resend's onboarding address for testing. Need to set up environment variables on Vercel (ANTHROPIC_API_KEY, RESEND_API_KEY, SUPABASE_SERVICE_ROLE_KEY, NEXT_PUBLIC_APP_URL) before the deployed URL works end-to-end.
 Plan for tomorrow: Set up all environment variables on Vercel and test the full end-to-end flow on the deployed URL. Write the audit engine unit tests and get them passing with npm test. Write GTM.md, ECONOMICS.md, LANDING_COPY.md, METRICS.md. Start REFLECTION.md.
+
+
+## Day 5 — 2026-05-11
+
+**Hours worked:** 6
+
+**What I did:** Set up Vitest with a custom `vitest.config.ts` to resolve 
+the `@` path alias — without this, all imports from `@/lib/tools` fail in 
+the test environment. Added `test`, `test:watch`, and `test:coverage` 
+scripts to `package.json`. Created `src/lib/auditEngine.ts` with 
+defensible plan-fit logic for all 8 tools — Cursor, GitHub Copilot, 
+Claude, ChatGPT, Anthropic API, OpenAI API, Gemini, and Windsurf. Engine 
+checks for wrong plan vs team size, cheaper same-vendor plan, 
+cross-vendor alternatives by use case, and retail vs credits opportunity 
+for high API spenders. Created `src/lib/auditEngine.test.ts` with 15 unit 
+tests. Hit 13/15 on first run — fixed two bugs: Cursor Teams threshold was 
+`<= 2` but teamSizeMap maps "2–5 people" to 3, so changed to `<= 3`. 
+Second bug was `highSavings` using `> 500` instead of `>= 500`, causing 
+the $2000 API spend test to return false. Fixed both and reached 15/15.
+
+**What I learned:** Test-driven debugging is fast — the error messages 
+from Vitest told me exactly which assertion failed and what value was 
+received vs expected. Fixed both bugs in under 5 minutes just by reading 
+the output. Also learned that `teamSizeMap` label-to-number conversions 
+need to be considered when writing threshold checks in the engine — the 
+engine receives a number like `3`, not the label `"2–5 people"`.
+
+**Blockers / what I'm stuck on:** Still need to paste `auditEngine.ts` 
+and `auditEngine.test.ts` into the right paths and verify the full 
+end-to-end flow on the deployed Vercel URL. Environment variables 
+(`ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, 
+`NEXT_PUBLIC_APP_URL`) not yet set on Vercel — the deployed URL will 
+fail at the API route until these are added.
+
+**Plan for tomorrow:** Set env vars on Vercel and test end-to-end on 
+deployed URL. Write GTM.md, ECONOMICS.md, LANDING_COPY.md, METRICS.md, 
+and start REFLECTION.md. Commit all MD files. Verify CI is green on 
+latest commit.
