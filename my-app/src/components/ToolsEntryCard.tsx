@@ -1,8 +1,7 @@
 'use client'
 // src/components/ToolEntryCard.tsx
 
-import { TOOLS, COMPANY_NAMES, getPriceHint, ToolEntry } from '@/src/lib/tools'
-
+import { TOOLS, COMPANY_NAMES, getPriceHint, ToolEntry } from '@/lib/tools'
 type Props = {
   entry: ToolEntry
   index: number
@@ -140,11 +139,10 @@ export default function ToolEntryCard({ entry, index, onChange, onRemove }: Prop
                 value={entry.spend}
                 readOnly={!!autoFilled && !perSeat}
                 onChange={(e) => onChange(entry.id, 'spend', e.target.value)}
-                className={`w-full text-sm pl-7 pr-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent ${
-                  autoFilled && !perSeat
+                className={`w-full text-sm pl-7 pr-3 py-2 rounded-lg border border-neutral-200 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent ${autoFilled && !perSeat
                     ? 'bg-neutral-50 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
                     : 'bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100'
-                }`}
+                  }`}
               />
             </div>
             {hint && <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">{hint}</p>}
